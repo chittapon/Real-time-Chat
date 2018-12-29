@@ -11,5 +11,6 @@ target 'Real-Time-Chat' do
   pod 'Firebase/Firestore'
   pod 'Alamofire'
   pod 'Reusable'
+  pod 'Firebase/Storage'
 
 end

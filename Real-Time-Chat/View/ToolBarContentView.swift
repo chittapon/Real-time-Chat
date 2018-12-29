@@ -21,6 +21,6 @@ class ToolBarContentView: UIView, NibLoadable {
         layer.shadowColor = #colorLiteral(red: 0.1048645601, green: 0.5270022154, blue: 0.7749804854, alpha: 1)
         layer.shadowRadius = 18
         layer.shadowOpacity = 0.2
-        
+        sendButton.isEnabled = false
     }
 }

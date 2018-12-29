@@ -9,6 +9,7 @@
 import RxSwift
 import RxCocoa
 import Firebase
+import FirebaseStorage
 
 protocol ChatViewModelType {
     var input: ChatInput { get }
@@ -17,7 +18,7 @@ protocol ChatViewModelType {
 
 protocol ChatInput {
     func viewDidLoad()
-    var sendMessage: PublishRelay<String> { get }
+    var sendMessage: PublishRelay<MediaMessage> { get }
 }
 
 protocol ChatOutput {
@@ -38,23 +39,38 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
     var messages: [MessageViewModelType] = []
     private lazy var db = Firestore.firestore()
     private lazy var collection = db.collection("messages")
+    private lazy var storage = Storage.storage()
+    private lazy var storageRef = storage.reference(withPath: "messages")
     private let userId = "wick"
     
     let reloadData = PublishRelay<ReloadMessage>()
     private let netWork = Network()
     var listener: ListenerRegistration?
-    var sendMessage = PublishRelay<String>()
+    var sendMessage = PublishRelay<MediaMessage>()
     private let bag = DisposeBag()
     
     init() {
-        sendMessage.subscribe(onNext: { [weak self] (text) in
+        sendMessage.subscribe(onNext: { [weak self] (media) in
+            
             guard let self = self else { return }
+            
             var data: [String: Any] = [:]
-            data["text"] = text
             data["userId"] = self.userId
             data["createdDate"] = Date()
             data["profileImage"] = "https://i.ytimg.com/vi/TtAMB2wv-8k/maxresdefault.jpg"
+            
+            switch media {
+                
+            case .message(let text):
+                data["text"] = text
+                data["mediaType"] = "text"
+                
+            case .image(let url):
+                data["mediaType"] = "image"
+            }
+            
             self.collection.addDocument(data: data)
+            
         }).disposed(by: bag)
     }
     
@@ -86,6 +102,19 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
 
     }
     
+    func uploadImage(id: String, url: URL) {
+        let imageRef = storageRef.child(id)
+        imageRef.putFile(from: url, metadata: nil) { [weak self] (_, error) in
+            guard let self = self else { return }
+            if let error = error {
+                print(error.localizedDescription)
+            }else {
+                let path = imageRef.fullPath
+                self.collection.document(id).updateData(["image": path])
+            }
+        }
+    }
+    
     func addMessage(doc: QueryDocumentSnapshot) {
 
         do {
@@ -106,6 +135,15 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
         messages.remove(at: index)
         let indexPath = IndexPath(item: index, section: 0)
         let reload: ReloadMessage = .delete(indexPath: indexPath)
+        reloadData.accept(reload)
+    }
+    
+    func updateMessage(doc: QueryDocumentSnapshot) {
+        guard let index = messages.firstIndex(where: { $0.output.id == doc.documentID }) else { return }
+        let indexPath = IndexPath(item: index, section: 0)
+        let message = messages[index]
+        message.input.updateMessage(doc: doc)
+        let reload: ReloadMessage = .update(indexPath: indexPath)
         reloadData.accept(reload)
     }
 }

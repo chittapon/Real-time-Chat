@@ -21,7 +21,7 @@ class ChatViewController: UIViewController {
     private lazy var toolBarContentView: ToolBarContentView = ToolBarContentView.loadFromNib()
     private let bag = DisposeBag()
     private let sectionInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    private let minimumLineSpacing: CGFloat = 12
+    private let minimumLineSpacing: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class ChatViewController: UIViewController {
     func setUI() {
         toolBar.setShadowImage(UIImage(), forToolbarPosition: .any)
         let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        flowLayout?.minimumLineSpacing = 12
+        flowLayout?.minimumLineSpacing = minimumLineSpacing
         flowLayout?.sectionInset = sectionInset
     }
     
@@ -85,16 +85,27 @@ class ChatViewController: UIViewController {
             
         }).disposed(by: bag)
         
-        let text = toolBarContentView.textView.rx.text.orEmpty
+        let text = toolBarContentView.textView.rx.text.orEmpty.share()
         let tap = toolBarContentView.sendButton.rx.tap
         
-        tap.withLatestFrom(text) { (_, text) -> String in
-            return text
+        tap.withLatestFrom(text) { (_, text) -> MediaMessage in
+            return .message(text: text)
+            
             }.do(onNext: { [weak self] (_) in
                 self?.toolBarContentView.textView.text = nil
                 self?.toolBarContentView.textView.setNeedsDisplay()
             }).bind(to: viewModel.input.sendMessage ).disposed(by: bag)
 
+        let isEnable = text.map({ $0.count }).map({ $0 > 0 })
+        isEnable.bind(to: toolBarContentView.sendButton.rx.isEnabled).disposed(by: bag)
+        
+        toolBarContentView.addButton.rx.tap.subscribe(onNext: { [weak self] (_) in
+            guard let self = self else { return }
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            self.present(imagePicker, animated: true, completion: nil)
+        }).disposed(by: bag)
+        
         viewModel.input.viewDidLoad()
     }
     
@@ -133,21 +144,43 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         let isOutgoing = message.output.isOutgoing
         
         let width = collectionView.bounds.width - sectionInset.left - sectionInset.right
-        let text = message.output.text
-        let attributes = NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)])
         let textContainerInset = MessageCollectionViewCell.textContainerInset
         
-        if isOutgoing {
-            let textViewWidth = width - 10 - textContainerInset.left - textContainerInset.right - 10
-            let additionalHeight = textContainerInset.top + textContainerInset.bottom + sectionInset.top + sectionInset.bottom
-            let height = UIView.calculateHeight(for: attributes, width: textViewWidth) + additionalHeight
-            return CGSize(width: width, height: height)
+        if let text = message.output.text {
             
-        }else {
-            let textViewWidth = width - 10 - 56 - 10 - textContainerInset.left - textContainerInset.right - 10
-            let additionalHeight = textContainerInset.top + textContainerInset.bottom + sectionInset.top + sectionInset.bottom
-            let height = UIView.calculateHeight(for: attributes, width: textViewWidth) + additionalHeight
-            return CGSize(width: width, height: height)
+            let attributes = NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)])
+            if isOutgoing {
+                
+                let textViewWidth = width - 10 - textContainerInset.left - textContainerInset.right - 10
+                let additionalHeight = textContainerInset.top + textContainerInset.bottom + sectionInset.top + sectionInset.bottom
+                let height = UIView.calculateHeight(for: attributes, width: textViewWidth) + additionalHeight
+                return CGSize(width: width, height: height)
+                
+            }else {
+                let textViewWidth = width - 10 - 56 - 10 - textContainerInset.left - textContainerInset.right - 10
+                let additionalHeight = textContainerInset.top + textContainerInset.bottom + sectionInset.top + sectionInset.bottom
+                let messageHeight = UIView.calculateHeight(for: attributes, width: textViewWidth) + additionalHeight
+                let profileImageHeight: CGFloat = 6 + 56 + 6
+                let height = max(profileImageHeight, messageHeight)
+                return CGSize(width: width, height: height)
+            }
+            
         }
+        fatalError()
+    }
+}
+
+
+extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL else { return }
+        viewModel.input.sendMessage.accept(.image(url: imageURL.absoluteString))
+        
     }
 }

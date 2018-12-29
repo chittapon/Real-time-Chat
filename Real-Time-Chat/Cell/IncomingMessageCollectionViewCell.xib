@@ -40,15 +40,14 @@
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="u7B-Rv-FlO">
-                                <rect key="frame" x="76" y="6" width="10" height="104"/>
+                                <rect key="frame" x="76" y="6" width="10" height="33"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="u7B-Rv-FlO" secondAttribute="bottom" constant="6" id="A84-I5-4HR"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="u7B-Rv-FlO" secondAttribute="bottom" constant="6" id="A84-I5-4HR"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="u7B-Rv-FlO" secondAttribute="trailing" constant="10" id="U1u-9t-7Lc"/>
                             <constraint firstItem="u7B-Rv-FlO" firstAttribute="top" secondItem="edc-fw-1ft" secondAttribute="top" constant="6" id="f8H-aR-5SH"/>
                             <constraint firstItem="tFV-c3-DKc" firstAttribute="top" secondItem="edc-fw-1ft" secondAttribute="top" constant="6" id="lyp-yY-2fB"/>

@@ -27,13 +27,20 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vn0-h0-aGr">
+                                <rect key="frame" x="10" y="6" width="303" height="128"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Vn0-h0-aGr" secondAttribute="bottom" constant="6" id="98h-Bw-29j"/>
                             <constraint firstItem="XXQ-vB-eoH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="MU5-R3-Vgt" secondAttribute="leading" constant="10" id="I2e-cF-ZKr"/>
                             <constraint firstAttribute="trailing" secondItem="XXQ-vB-eoH" secondAttribute="trailing" constant="10" id="dbl-jE-81e"/>
                             <constraint firstItem="XXQ-vB-eoH" firstAttribute="top" secondItem="MU5-R3-Vgt" secondAttribute="top" constant="6" id="eYP-Ds-GPD"/>
                             <constraint firstAttribute="bottom" secondItem="XXQ-vB-eoH" secondAttribute="bottom" constant="6" id="ojE-kj-0lx"/>
+                            <constraint firstItem="Vn0-h0-aGr" firstAttribute="top" secondItem="MU5-R3-Vgt" secondAttribute="top" constant="6" id="sjn-JY-UAW"/>
+                            <constraint firstItem="Vn0-h0-aGr" firstAttribute="leading" secondItem="MU5-R3-Vgt" secondAttribute="leading" constant="10" id="tMR-zn-6BC"/>
+                            <constraint firstAttribute="trailing" secondItem="Vn0-h0-aGr" secondAttribute="trailing" constant="10" id="y4Y-WE-UMn"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -48,6 +55,7 @@
             <size key="customSize" width="323" height="140"/>
             <connections>
                 <outlet property="containerView" destination="MU5-R3-Vgt" id="v7g-XG-EGH"/>
+                <outlet property="mediaImageView" destination="Vn0-h0-aGr" id="dOC-ax-7x4"/>
                 <outlet property="textView" destination="XXQ-vB-eoH" id="kS7-oX-T2I"/>
             </connections>
             <point key="canvasLocation" x="356" y="194.30284857571215"/>
