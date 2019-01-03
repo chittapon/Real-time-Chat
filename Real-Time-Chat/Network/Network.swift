@@ -29,6 +29,7 @@ struct Network {
                     observer.onError(error)
                     
                 }
+                observer.onCompleted()
             })
             return Disposables.create {
                 task.cancel()

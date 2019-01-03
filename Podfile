@@ -12,5 +12,6 @@ target 'Real-Time-Chat' do
   pod 'Alamofire'
   pod 'Reusable'
   pod 'Firebase/Storage'
+  pod 'Kingfisher'
 
 end

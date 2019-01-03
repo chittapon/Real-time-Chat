@@ -6,7 +6,6 @@
 //  Copyright © 2561 Chittapon Thongchim. All rights reserved.
 //
 
-import UIKit
 import RxSwift
 import RxCocoa
 import Firebase
@@ -18,17 +17,19 @@ protocol MessageViewModelType {
 
 protocol MessageInput {
     func updateMessage(doc: QueryDocumentSnapshot)
+    func setMediaImage(size: CGSize)
+    var reloadImage: PublishRelay<Void> { get }
 }
 
 protocol MessageOutput {
     var text: String? { get }
-    var image: UIImage? { get }
+    var mediaImageURL: URL? { get }
     var isHiddenTextView: Bool { get }
     var isHiddenImageView: Bool { get }
     var isOutgoing: Bool { get }
     var date: Date { get }
     var id: String { get }
-    var profileImage: Observable<Data> { get }
+    var profileImageURL: URL? { get }
     var imageSize: CGSize { get }
     var reloadImage: PublishRelay<Void> { get }
 }
@@ -42,8 +43,8 @@ class MessageViewModel: MessageViewModelType, MessageInput, MessageOutput {
     let isOutgoing: Bool
     let date: Date
     let id: String
-    let profileImage: Observable<Data>
-    var image: UIImage? = nil
+    let profileImageURL: URL?
+    var mediaImageURL: URL?
     let isHiddenTextView: Bool
     let isHiddenImageView: Bool
     var imageSize: CGSize = .zero
@@ -56,41 +57,35 @@ class MessageViewModel: MessageViewModelType, MessageInput, MessageOutput {
         isOutgoing = message.userId == userId
         date = message.createdDate
         id = message.id
-        profileImage = network.request(url: message.profileImage)
+        profileImageURL = URL(string: message.profileImage)
         
         switch message.media {
 
         case .message(let text):
-            self.isHiddenImageView = true
-            self.isHiddenTextView = false
+            isHiddenImageView = true
+            isHiddenTextView = false
+            mediaImageURL = nil
             self.text = text
             
         case .image(let url):
-            self.isHiddenImageView = false
-            self.isHiddenTextView = true
-            fetchImage(url: url)
+            isHiddenImageView = false
+            isHiddenTextView = true
+            mediaImageURL = url
             
         }
     }
     
     func updateMessage(doc: QueryDocumentSnapshot) {
         message.update(doc: doc)
-        
         if case let .image(url) = message.media {
-            fetchImage(url: url)
+            mediaImageURL = url
         }
     }
     
-    
-    func fetchImage(url: URL?) {
-        if let url = url?.absoluteString, url.hasPrefix("http") || url.hasPrefix("https") {
-            network.request(url: url).subscribe(onNext: { [weak self] (data) in
-                guard let self = self, let image = UIImage(data: data) else { return }
-                self.imageSize = image.size
-                self.image = image
-                self.reloadImage.accept(())
-                
-            }).disposed(by: bag)
+    func setMediaImage(size: CGSize) {
+        if imageSize == .zero {
+            imageSize = size
+            reloadImage.accept(())
         }
     }
 }

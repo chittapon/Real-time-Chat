@@ -69,7 +69,6 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
                 
             case .image(let url):
                 data["mediaType"] = "image"
-                data["image"] = "NO_IMAGE"
                 let doc = self.collection.document()
                 doc.setData(data)
                 guard let url = url else { return }
@@ -82,7 +81,7 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
     
     func viewDidLoad() {
         
-        listener = collection.addSnapshotListener { [weak self] (query, error) in
+        listener = collection.order(by: "createdDate").addSnapshotListener { [weak self] (query, error) in
             
             guard let self = self, error == nil, let snapShot = query else {
                 print(error?.localizedDescription ?? "")

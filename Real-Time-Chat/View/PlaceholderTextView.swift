@@ -28,7 +28,7 @@ class PlaceholderTextView: UITextView {
     override func awakeFromNib() {
         super.awakeFromNib()
         textContainerInset = insets
-        
+        autocorrectionType = .no
         NotificationCenter.default.rx.notification(UITextView.textDidChangeNotification, object: self).subscribe(onNext: { [weak self] (_) in
             self?.setNeedsDisplay()
         }).disposed(by: bag)

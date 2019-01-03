@@ -70,6 +70,7 @@ class ChatViewController: UIViewController {
         viewModel.output.reloadData.subscribe(onNext: { [weak self] (reload) in
             
             guard let self = self else { return }
+            
             switch reload {
 
             case .insert(let indexPath):
@@ -81,6 +82,9 @@ class ChatViewController: UIViewController {
                 
             case .update(let indexPath):
                 self.collectionView.reloadItems(at: [indexPath])
+                let lastItem = self.collectionView.numberOfItems(inSection: 0)
+                let lastIndexPath = IndexPath.init(item: lastItem - 1, section: 0)
+                self.collectionView.scrollToItem(at: lastIndexPath, at: .top, animated: true)
             }
             
         }).disposed(by: bag)
@@ -171,7 +175,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
                 
                 let imageSize = message.output.imageSize
                 if imageSize == .zero {
-                    return CGSize(width: 1, height: 1)
+                    return .zero
                 }
                 let ratio = imageSize.width / imageSize.height
                 let height = width / ratio
@@ -182,7 +186,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
                 let newWidth = width - 10 - 10 - 10
                 let imageSize = message.output.imageSize
                 if imageSize == .zero {
-                    return CGSize(width: 1, height: 1)
+                    return .zero
                 }
                 let ratio = imageSize.width / imageSize.height
                 let height = newWidth / ratio

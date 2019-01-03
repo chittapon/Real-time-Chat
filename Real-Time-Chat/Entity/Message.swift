@@ -41,9 +41,11 @@ class Message {
             media = MediaMessage.message(text: text)
             
         case "image":
-            guard let imageURL = data["image"] as? String,
-                let url = URL(string: imageURL) else { throw MessageError.noImageURL }
-            media = MediaMessage.image(url: url)
+            if let imageURL = data["image"] as? String, let url = URL(string: imageURL) {
+                media = MediaMessage.image(url: url)
+            }else {
+                media = MediaMessage.image(url: nil)
+            }
             
         default:
             throw MessageError.invalidKey
@@ -78,6 +80,5 @@ class Message {
     
     enum MessageError: Error {
         case invalidKey
-        case noImageURL
     }
 }
