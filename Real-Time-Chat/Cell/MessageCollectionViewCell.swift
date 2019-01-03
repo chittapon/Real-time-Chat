@@ -12,7 +12,6 @@ import RxSwift
 
 class MessageCollectionViewCell: UICollectionViewCell, NibReusable {
     
-    @IBOutlet private var containerView: UIView!
     @IBOutlet private var textView: UITextView!
     @IBOutlet private var profileImageView: UIImageView!
     @IBOutlet private var profileImageContainerView: UIView!
@@ -49,11 +48,18 @@ class MessageCollectionViewCell: UICollectionViewCell, NibReusable {
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         textView.layer.insertSublayer(gradientLayer, at: 0)
         textView.layer.cornerRadius = 6
+        
+        mediaImageView?.clipsToBounds = true
+        mediaImageView?.layer.cornerRadius = 6
     }
     
     func configCell() {
 
+        textView.isHidden = viewModel.output.isHiddenTextView
         textView.text = viewModel.output.text
+        mediaImageView?.isHidden = viewModel.output.isHiddenImageView
+        mediaImageView?.image = viewModel.output.image
+        
         if let profileImageView = profileImageView {
             viewModel.output.profileImage.map({ UIImage(data: $0) }).bind(to: profileImageView.rx.image ).disposed(by: bag)
         }

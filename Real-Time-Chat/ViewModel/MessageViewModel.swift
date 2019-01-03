@@ -22,11 +22,15 @@ protocol MessageInput {
 
 protocol MessageOutput {
     var text: String? { get }
-    var image: Observable<Data> { get }
+    var image: UIImage? { get }
+    var isHiddenTextView: Bool { get }
+    var isHiddenImageView: Bool { get }
     var isOutgoing: Bool { get }
     var date: Date { get }
     var id: String { get }
     var profileImage: Observable<Data> { get }
+    var imageSize: CGSize { get }
+    var reloadImage: PublishRelay<Void> { get }
 }
 
 class MessageViewModel: MessageViewModelType, MessageInput, MessageOutput {
@@ -35,12 +39,17 @@ class MessageViewModel: MessageViewModelType, MessageInput, MessageOutput {
     var output: MessageOutput { return self }
     private let message: Message
     var text: String?
-    var image = Observable<Data>.never()
     let isOutgoing: Bool
     let date: Date
     let id: String
     let profileImage: Observable<Data>
+    var image: UIImage? = nil
+    let isHiddenTextView: Bool
+    let isHiddenImageView: Bool
+    var imageSize: CGSize = .zero
+    var reloadImage: PublishRelay<Void> = PublishRelay()
     private let network = Network()
+    private let bag = DisposeBag()
     
     init(message: Message, userId: String) {
         self.message = message
@@ -52,16 +61,36 @@ class MessageViewModel: MessageViewModelType, MessageInput, MessageOutput {
         switch message.media {
 
         case .message(let text):
+            self.isHiddenImageView = true
+            self.isHiddenTextView = false
             self.text = text
             
         case .image(let url):
-            if let url = url {
-                image = network.request(url: url)
-            }
+            self.isHiddenImageView = false
+            self.isHiddenTextView = true
+            fetchImage(url: url)
+            
         }
     }
     
     func updateMessage(doc: QueryDocumentSnapshot) {
         message.update(doc: doc)
+        
+        if case let .image(url) = message.media {
+            fetchImage(url: url)
+        }
+    }
+    
+    
+    func fetchImage(url: URL?) {
+        if let url = url?.absoluteString, url.hasPrefix("http") || url.hasPrefix("https") {
+            network.request(url: url).subscribe(onNext: { [weak self] (data) in
+                guard let self = self, let image = UIImage(data: data) else { return }
+                self.imageSize = image.size
+                self.image = image
+                self.reloadImage.accept(())
+                
+            }).disposed(by: bag)
+        }
     }
 }

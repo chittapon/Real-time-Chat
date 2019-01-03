@@ -10,7 +10,7 @@ import Firebase
 
 enum MediaMessage {
     case message(text: String)
-    case image(url: URL)
+    case image(url: URL?)
 }
 
 class Message {
@@ -67,8 +67,9 @@ class Message {
             media = MediaMessage.message(text: text)
             
         case "image":
-            let imageURL = data["image"] as? String
-            media = MediaMessage.image(url: imageURL)
+            guard let imageURL = data["image"] as? String else { return }
+            let url = URL(string: imageURL)
+            media = MediaMessage.image(url: url)
             
         default:
             break

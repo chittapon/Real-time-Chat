@@ -165,8 +165,32 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
                 return CGSize(width: width, height: height)
             }
             
+        }else {
+            
+            if isOutgoing {
+                
+                let imageSize = message.output.imageSize
+                if imageSize == .zero {
+                    return CGSize(width: 1, height: 1)
+                }
+                let ratio = imageSize.width / imageSize.height
+                let height = width / ratio
+                return CGSize(width: width, height: height)
+                
+            }else {
+                
+                let newWidth = width - 10 - 10 - 10
+                let imageSize = message.output.imageSize
+                if imageSize == .zero {
+                    return CGSize(width: 1, height: 1)
+                }
+                let ratio = imageSize.width / imageSize.height
+                let height = newWidth / ratio
+                return CGSize(width: width, height: height)
+            }
+            
         }
-        fatalError()
+
     }
 }
 
@@ -179,8 +203,9 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
+        picker.dismiss(animated: true, completion: nil)
         guard let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL else { return }
-        viewModel.input.sendMessage.accept(.image(url: imageURL.absoluteString))
+        viewModel.input.sendMessage.accept(.image(url: imageURL))
         
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50C11A8421DE11AB00AC3DC1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50C11A8321DE11AB00AC3DC1 /* Main.storyboard */; };
 		C4F1D80A21CEAFBC009E7163 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4F1D80821CEAFBC009E7163 /* LaunchScreen.storyboard */; };
 		C4F1D82A21CEAFF0009E7163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81121CEAFEF009E7163 /* AppDelegate.swift */; };
 		C4F1D82B21CEAFF0009E7163 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81221CEAFEF009E7163 /* Extension.swift */; };
@@ -17,7 +18,6 @@
 		C4F1D83021CEAFF0009E7163 /* IncomingMessageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81821CEAFEF009E7163 /* IncomingMessageCollectionViewCell.swift */; };
 		C4F1D83121CEAFF0009E7163 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81A21CEAFF0009E7163 /* Network.swift */; };
 		C4F1D83221CEAFF0009E7163 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81B21CEAFF0009E7163 /* ChatViewController.swift */; };
-		C4F1D83321CEAFF0009E7163 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4F1D81C21CEAFF0009E7163 /* Main.storyboard */; };
 		C4F1D83421CEAFF0009E7163 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81E21CEAFF0009E7163 /* ChatViewModel.swift */; };
 		C4F1D83521CEAFF0009E7163 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D81F21CEAFF0009E7163 /* MessageViewModel.swift */; };
 		C4F1D83821CEAFF0009E7163 /* ToolBarContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C4F1D82321CEAFF0009E7163 /* ToolBarContentView.xib */; };
@@ -31,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		44F350992D76CD5C99733C3A /* Pods_Real_Time_Chat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Real_Time_Chat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		50C11A8321DE11AB00AC3DC1 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		73C084BEA14012585D9D2834 /* Pods-Real-Time-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Real-Time-Chat.release.xcconfig"; path = "Pods/Target Support Files/Pods-Real-Time-Chat/Pods-Real-Time-Chat.release.xcconfig"; sourceTree = "<group>"; };
 		C4F1D7FC21CEAFBB009E7163 /* Real-Time-Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Real-Time-Chat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4F1D80921CEAFBC009E7163 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		C4F1D81821CEAFEF009E7163 /* IncomingMessageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingMessageCollectionViewCell.swift; sourceTree = "<group>"; };
 		C4F1D81A21CEAFF0009E7163 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		C4F1D81B21CEAFF0009E7163 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		C4F1D81C21CEAFF0009E7163 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		C4F1D81E21CEAFF0009E7163 /* ChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		C4F1D81F21CEAFF0009E7163 /* MessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		C4F1D82321CEAFF0009E7163 /* ToolBarContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToolBarContentView.xib; sourceTree = "<group>"; };
@@ -106,11 +106,11 @@
 				C4F1D81B21CEAFF0009E7163 /* ChatViewController.swift */,
 				C4F1D81221CEAFEF009E7163 /* Extension.swift */,
 				C4F1D82821CEAFF0009E7163 /* GoogleService-Info.plist */,
-				C4F1D81C21CEAFF0009E7163 /* Main.storyboard */,
 				C4F1D82921CEAFF0009E7163 /* Assets.xcassets */,
 				C4F1D81121CEAFEF009E7163 /* AppDelegate.swift */,
 				C4F1D80821CEAFBC009E7163 /* LaunchScreen.storyboard */,
 				C4F1D80B21CEAFBC009E7163 /* Info.plist */,
+				50C11A8321DE11AB00AC3DC1 /* Main.storyboard */,
 			);
 			path = "Real-Time-Chat";
 			sourceTree = "<group>";
@@ -232,10 +232,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50C11A8421DE11AB00AC3DC1 /* Main.storyboard in Resources */,
 				C4F1D82C21CEAFF0009E7163 /* IncomingMessageCollectionViewCell.xib in Resources */,
 				C4F1D80A21CEAFBC009E7163 /* LaunchScreen.storyboard in Resources */,
 				C4F1D82E21CEAFF0009E7163 /* OutgoingMessageCollectionViewCell.xib in Resources */,
-				C4F1D83321CEAFF0009E7163 /* Main.storyboard in Resources */,
 				C4F1D83D21CEAFF0009E7163 /* Assets.xcassets in Resources */,
 				C4F1D83821CEAFF0009E7163 /* ToolBarContentView.xib in Resources */,
 				C4F1D83C21CEAFF0009E7163 /* GoogleService-Info.plist in Resources */,
@@ -484,7 +484,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 56G37F59GH;
 				INFOPLIST_FILE = "Real-Time-Chat/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.chittapon.Real-Time-Chat";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -502,7 +505,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 56G37F59GH;
 				INFOPLIST_FILE = "Real-Time-Chat/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.chittapon.Real-Time-Chat";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;

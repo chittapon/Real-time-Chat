@@ -41,6 +41,7 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
     private lazy var collection = db.collection("messages")
     private lazy var storage = Storage.storage()
     private lazy var storageRef = storage.reference(withPath: "messages")
+    //jonathan
     private let userId = "wick"
     
     let reloadData = PublishRelay<ReloadMessage>()
@@ -64,12 +65,17 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
             case .message(let text):
                 data["text"] = text
                 data["mediaType"] = "text"
+                self.collection.addDocument(data: data)
                 
             case .image(let url):
                 data["mediaType"] = "image"
+                data["image"] = "NO_IMAGE"
+                let doc = self.collection.document()
+                doc.setData(data)
+                guard let url = url else { return }
+                self.uploadImage(id: doc.documentID, url: url)
             }
             
-            self.collection.addDocument(data: data)
             
         }).disposed(by: bag)
     }
@@ -91,11 +97,10 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
                     self.addMessage(doc: docChange.document)
                     
                 case .modified:
-                    break
+                    self.updateMessage(doc: docChange.document)
                     
                 case .removed:
                     self.deleteMessage(doc: docChange.document)
-                    break
                 }
             }
         }
@@ -109,8 +114,10 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
             if let error = error {
                 print(error.localizedDescription)
             }else {
-                let path = imageRef.fullPath
-                self.collection.document(id).updateData(["image": path])
+                imageRef.downloadURL(completion: { (imageURL, error) in
+                    guard let url = imageURL else { return }
+                    self.collection.document(id).updateData(["image": url.absoluteString])
+                })
             }
         }
     }
@@ -122,8 +129,12 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
             let viewModel = MessageViewModel(message: message, userId: userId)
             messages.append(viewModel)
             let indexPath = IndexPath(item: messages.count - 1, section: 0)
+            
+            viewModel.output.reloadImage.map({ ReloadMessage.update(indexPath: indexPath) }).bind(to: reloadData).disposed(by: bag)
+            
             let reload: ReloadMessage = .insert(indexPath: indexPath)
             reloadData.accept(reload)
+            
         } catch let error {
             print(error)
         }
@@ -142,7 +153,11 @@ class ChatViewModel: ChatViewModelType, ChatInput, ChatOutput {
         guard let index = messages.firstIndex(where: { $0.output.id == doc.documentID }) else { return }
         let indexPath = IndexPath(item: index, section: 0)
         let message = messages[index]
+        
         message.input.updateMessage(doc: doc)
+        
+        message.output.reloadImage.map({ ReloadMessage.update(indexPath: indexPath) }).bind(to: reloadData).disposed(by: bag)
+        
         let reload: ReloadMessage = .update(indexPath: indexPath)
         reloadData.accept(reload)
     }
